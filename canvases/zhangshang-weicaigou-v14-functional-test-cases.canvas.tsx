@@ -33,14 +33,14 @@ function batch(
 }
 
 batch("账号与身份", "ACC", [
-  { scene: "微信授权登录成功", precondition: "未登录且微信授权可用", steps: "进入我的-点击登录-同意微信授权", expected: "登录成功进入已登录态", priority: "P0", type: "positive", coverage: "登录主流程" },
-  { scene: "拒绝微信授权登录", precondition: "未登录", steps: "进入登录并拒绝微信授权", expected: "保持未登录并提示需授权", priority: "P0", type: "negative", coverage: "授权拒绝分支" },
-  { scene: "首次登录未绑定手机号触发绑定", precondition: "微信已授权但账号未绑定手机号", steps: "完成微信授权后进入系统", expected: "自动跳转手机号绑定页", priority: "P1", type: "positive", coverage: "绑定引导" },
-  { scene: "已绑定手机号直接登录", precondition: "微信账号已绑定手机号", steps: "进入我的并执行微信授权登录", expected: "直接进入系统主页无需二次绑定", priority: "P1", type: "positive", coverage: "绑定状态分支" },
+  { scene: "绑定登录成功", precondition: "未登录且账号可进行绑定", steps: "进入我的-点击登录-完成绑定流程", expected: "登录成功进入已登录态", priority: "P0", type: "positive", coverage: "登录主流程" },
+  { scene: "绑定流程中断登录", precondition: "未登录", steps: "进入登录后中断绑定流程", expected: "保持未登录并提示完成绑定", priority: "P0", type: "negative", coverage: "绑定中断分支" },
+  { scene: "首次登录未绑定手机号触发绑定", precondition: "账号未绑定手机号", steps: "进入系统登录流程", expected: "自动跳转手机号绑定页", priority: "P1", type: "positive", coverage: "绑定引导" },
+  { scene: "已绑定手机号直接登录", precondition: "账号已绑定手机号", steps: "进入我的并点击登录", expected: "直接进入系统主页无需二次绑定", priority: "P1", type: "positive", coverage: "绑定状态分支" },
   { scene: "手机号为空提交绑定", precondition: "处于手机号绑定页", steps: "不输入手机号直接提交", expected: "提示手机号必填", priority: "P1", type: "boundary", coverage: "必填校验" },
   { scene: "手机号格式错误", precondition: "处于手机号绑定页", steps: "输入非法手机号后提交", expected: "提示手机号格式错误", priority: "P1", type: "boundary", coverage: "格式校验" },
   { scene: "绑定手机号已被其他账号占用", precondition: "处于手机号绑定页且该手机号已占用", steps: "输入已占用手机号提交绑定", expected: "绑定失败并提示手机号已存在", priority: "P2", type: "negative", coverage: "唯一性校验" },
-  { scene: "微信登录态失效重新授权", precondition: "历史登录过但微信会话已失效", steps: "进入我的触发登录并重新授权", expected: "授权成功后恢复登录态", priority: "P1", type: "negative", coverage: "会话时效" },
+  { scene: "登录态失效重新登录", precondition: "历史登录过但当前会话已失效", steps: "进入我的触发登录并重新完成绑定登录", expected: "登录成功后恢复登录态", priority: "P1", type: "negative", coverage: "会话时效" },
   { scene: "未登录点击我的受限入口", precondition: "未登录", steps: "点击我的中受限功能入口", expected: "弹出登录引导弹窗", priority: "P1", type: "positive", coverage: "登录拦截" },
   { scene: "多角色账号身份切换成功", precondition: "账号具备2个及以上角色", steps: "我的-身份切换-选择新角色", expected: "切换成功并展示新角色菜单", priority: "P0", type: "positive", coverage: "身份切换" },
   { scene: "单角色账号进入切换", precondition: "账号仅单角色", steps: "点击身份切换", expected: "不可切换或仅展示当前角色", priority: "P1", type: "boundary", coverage: "角色边界" },
