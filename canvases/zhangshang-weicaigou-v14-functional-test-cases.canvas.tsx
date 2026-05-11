@@ -65,7 +65,7 @@ batch("招标人管理", "INV", [
 batch("专家申请与资料", "EXP", [
   { scene: "申请成为专家提交成功", precondition: "投标人或项目经理登录", steps: "我的-申请成为专家-填资料-提交", expected: "申请进入待审核状态", priority: "P0", type: "positive", coverage: "申请主流程" },
   { scene: "申请资料缺失提交", precondition: "申请页面可用", steps: "不填关键字段直接提交", expected: "提示必填并阻止提交", priority: "P1", type: "boundary", coverage: "必填校验" },
-  { scene: "证件附件格式非法", precondition: "申请页面可用", steps: "上传不支持格式附件", expected: "上传失败并提示支持格式", priority: "P1", type: "negative", coverage: "上传校验" },
+  { scene: "证件附件格式非法", precondition: "申请页面可用", steps: "上传不支持格式附件", expected: "上传失败并提示不支持的文件格式", priority: "P1", type: "negative", coverage: "上传校验" },
   { scene: "重复发起专家申请", precondition: "存在待审核申请", steps: "再次进入申请并提交", expected: "提示申请处理中不可重复提交", priority: "P1", type: "negative", coverage: "重复提交" },
   { scene: "后台审核通过", precondition: "后台有待审核专家申请", steps: "审核通过该申请", expected: "账号新增专家角色", priority: "P0", type: "positive", coverage: "审核通过分支" },
   { scene: "后台审核驳回", precondition: "后台有待审核专家申请", steps: "审核驳回并填写原因", expected: "用户侧显示驳回状态和原因", priority: "P1", type: "positive", coverage: "审核驳回分支" },
