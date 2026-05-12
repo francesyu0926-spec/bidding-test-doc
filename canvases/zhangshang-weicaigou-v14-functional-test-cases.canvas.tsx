@@ -79,7 +79,6 @@ batch("专家申请与资料", "EXP", [
   { scene: "身份证或手机号格式非法", precondition: "专家申请页", steps: "输入非法身份证或手机号提交", expected: "对应字段提示格式错误", priority: "P0", type: "boundary", coverage: "格式校验" },
   { scene: "工作单位或姓名未填", precondition: "专家申请页", steps: "姓名或单位留空提交", expected: "提示必填并拦截", priority: "P1", type: "boundary", coverage: "文本必填" },
   { scene: "专业类别未选", precondition: "专家申请页", steps: "未选专业类别提交", expected: "提示选择专业类别", priority: "P0", type: "boundary", coverage: "专业必选" },
-  { scene: "证书与专业仅提示不校验", precondition: "专家申请页", steps: "选择专业并上传不同专业证书后提交", expected: "页面仅提示不拦截提交", priority: "P1", type: "positive", coverage: "提示展示" },
   { scene: "专家证书未上传提交", precondition: "专家申请页", steps: "不上传证书其余完整提交", expected: "提示上传证书并拦截", priority: "P0", type: "boundary", coverage: "证书必填" },
   { scene: "手写签名未绘制提交", precondition: "专家申请页", steps: "签名区空白提交", expected: "提示完成手写签名并拦截", priority: "P0", type: "boundary", coverage: "签名必填" },
   { scene: "重新签字清空签名区", precondition: "已绘制签名", steps: "点击重新签字", expected: "签名区清空可重绘", priority: "P1", type: "positive", coverage: "重新签字" },
