@@ -75,6 +75,14 @@ batch("专家申请与资料", "EXP", [
   { scene: "资料审核通过后生效", precondition: "存在待审资料修改", steps: "后台通过审核", expected: "新资料在专家端与评标签名环节可见", priority: "P1", type: "positive", coverage: "生效机制" },
   { scene: "资料审核驳回后回退", precondition: "存在待审资料修改", steps: "后台驳回", expected: "继续沿用旧资料并展示驳回反馈", priority: "P1", type: "positive", coverage: "回退机制" },
   { scene: "无专家角色访问资料管理", precondition: "普通投标人登录", steps: "访问专家资料管理入口", expected: "入口不可见或无权限", priority: "P1", type: "negative", coverage: "权限控制" },
+  { scene: "省市未选提交", precondition: "专家申请页", steps: "其余项填全未选省市提交", expected: "提示选择所在地区并拦截", priority: "P0", type: "boundary", coverage: "省市必选" },
+  { scene: "身份证或手机号格式非法", precondition: "专家申请页", steps: "输入非法身份证或手机号提交", expected: "对应字段提示格式错误", priority: "P0", type: "boundary", coverage: "格式校验" },
+  { scene: "工作单位或姓名未填", precondition: "专家申请页", steps: "姓名或单位留空提交", expected: "提示必填并拦截", priority: "P1", type: "boundary", coverage: "文本必填" },
+  { scene: "专业类别未选", precondition: "专家申请页", steps: "未选专业类别提交", expected: "提示选择专业类别", priority: "P0", type: "boundary", coverage: "专业必选" },
+  { scene: "证书与专业一致提示展示", precondition: "专家申请页", steps: "查看专业类别下方说明", expected: "展示与证书专业保持一致提示", priority: "P2", type: "positive", coverage: "提示展示" },
+  { scene: "专家证书未上传提交", precondition: "专家申请页", steps: "不上传证书其余完整提交", expected: "提示上传证书并拦截", priority: "P0", type: "boundary", coverage: "证书必填" },
+  { scene: "手写签名未绘制提交", precondition: "专家申请页", steps: "签名区空白提交", expected: "提示完成手写签名并拦截", priority: "P0", type: "boundary", coverage: "签名必填" },
+  { scene: "重新签字清空签名区", precondition: "已绘制签名", steps: "点击重新签字", expected: "签名区清空可重绘", priority: "P1", type: "positive", coverage: "重新签字" },
 ]);
 
 batch("招标发布", "PUB", [
