@@ -91,7 +91,7 @@ batch("招标发布", "PUB", [
   { scene: "未选择招标方提交", precondition: "新建项目页", steps: "缺失招标方后提交", expected: "提示招标方必选", priority: "P0", type: "boundary", coverage: "必填校验" },
   { scene: "未选择招标方式提交", precondition: "新建项目页", steps: "不选招标方式提交", expected: "提示招标方式必选", priority: "P0", type: "boundary", coverage: "必填校验" },
   { scene: "文件费与平台使用费分开填写", precondition: "新建项目页", steps: "分别输入两项费用并保存", expected: "两项独立展示并参与后续分项缴费", priority: "P0", type: "positive", coverage: "费用拆分" },
-  { scene: "文件费为0边界", precondition: "新建项目页", steps: "文件费输入0提交", expected: "按规则允许或提示最小值限制", priority: "P2", type: "boundary", coverage: "金额边界" },
+  { scene: "文件费必须大于0校验", precondition: "新建项目页", steps: "文件费输入0或负数提交", expected: "提示文件费必须大于0并拦截", priority: "P0", type: "boundary", coverage: "文件费下限" },
   { scene: "平台使用费负数输入", precondition: "新建项目页", steps: "输入负数费用提交", expected: "拦截并提示金额非法", priority: "P1", type: "negative", coverage: "金额合法性" },
   { scene: "开标时间早于当前时间", precondition: "新建项目页", steps: "设置过去时间并提交", expected: "提示开标时间无效", priority: "P1", type: "boundary", coverage: "时间边界" },
   { scene: "文件获取开始晚于结束", precondition: "新建项目页", steps: "设置开始时间>结束时间提交", expected: "提示时间区间非法", priority: "P1", type: "boundary", coverage: "时序校验" },
