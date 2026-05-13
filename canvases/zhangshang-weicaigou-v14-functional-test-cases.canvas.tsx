@@ -73,7 +73,7 @@ batch("专家申请与资料", "EXP", [
   { scene: "资料管理签名上传并保存", precondition: "专家账号已登录且资料管理页可用", steps: "资料管理-专家签名上传并保存", expected: "提交成功进入待审核", priority: "P0", type: "positive", coverage: "资料签名上传" },
   { scene: "资料管理签名尺寸过大", precondition: "资料管理签名上传入口可用", steps: "上传超大签名文件", expected: "提示超限并拒绝", priority: "P2", type: "boundary", coverage: "资料签名大小" },
   { scene: "资料变更审核通过后生效", precondition: "专家已是专家且资料变更待审核", steps: "后台对资料变更单审核通过", expected: "新资料在专家端与评审侧生效可见", priority: "P1", type: "positive", coverage: "生效机制" },
-  { scene: "资料变更审核驳回回退", precondition: "专家已是专家且资料变更待审核", steps: "后台驳回并填写原因", expected: "沿用旧资料并展示驳回反馈", priority: "P1", type: "positive", coverage: "回退机制" },
+  { scene: "资料变更审核驳回回退", precondition: "专家已是专家且资料变更待审核", steps: "后台对资料变更单审核驳回", expected: "沿用旧资料,小程序前台不展示驳回原因", priority: "P1", type: "positive", coverage: "回退机制" },
   { scene: "无专家角色访问资料管理", precondition: "普通投标人登录", steps: "访问专家资料管理入口", expected: "入口不可见或无权限", priority: "P1", type: "negative", coverage: "权限控制" },
   { scene: "省市未选提交", precondition: "专家申请页", steps: "其余项填全未选省市提交", expected: "提示选择所在地区并拦截", priority: "P0", type: "boundary", coverage: "省市必选" },
   { scene: "身份证或手机号格式非法", precondition: "专家申请页", steps: "输入非法身份证或手机号提交", expected: "对应字段提示格式错误", priority: "P0", type: "boundary", coverage: "格式校验" },
