@@ -109,6 +109,15 @@ batch("招标发布", "PUB", [
   { scene: "编辑评审表格后保存回显", precondition: "投标中项目可编辑评审表格", steps: "修改评分项并保存后重进", expected: "字段与内容正确回显", priority: "P1", type: "positive", coverage: "数据持久化" },
   { scene: "已到开标时间后不可修改时间", precondition: "项目已达开标时间", steps: "发布变更尝试修改时间节点", expected: "禁止修改并提示原因", priority: "P0", type: "negative", coverage: "状态门禁" },
   { scene: "招标方式与后续流程映射正确", precondition: "分别创建不同招标方式项目", steps: "进入开评标查看流程", expected: "流程节点与招标方式定义一致", priority: "P0", type: "positive", coverage: "流程映射" },
+  { scene: "项目编号与项目名称必填校验", precondition: "新建项目页", steps: "项目编号或项目名称留空提交", expected: "提示必填并拦截提交", priority: "P0", type: "boundary", coverage: "基础必填" },
+  { scene: "招标类型未选择拦截", precondition: "新建项目页", steps: "不选招标类型直接提交", expected: "提示请选择招标类型", priority: "P0", type: "boundary", coverage: "下拉必选" },
+  { scene: "开标与获取文件时间顺序校验", precondition: "新建项目页", steps: "设置获取结束晚于开标时间提交", expected: "提示时间顺序非法并拦截", priority: "P1", type: "boundary", coverage: "时序校验" },
+  { scene: "招标文件未上传拦截", precondition: "新建项目页", steps: "不上传招标文件直接提交", expected: "提示需上传招标文件", priority: "P0", type: "boundary", coverage: "文件必填" },
+  { scene: "投标保证金负数输入拦截", precondition: "新建项目页", steps: "输入负数保证金提交", expected: "提示金额非法并阻止提交", priority: "P1", type: "negative", coverage: "保证金金额" },
+  { scene: "新建项目页默认值与开关回显", precondition: "新建项目页", steps: "观察默认值并切换开关后保存重进", expected: "默认值正确且回显与最终选择一致", priority: "P1", type: "positive", coverage: "默认值与回显" },
+  { scene: "费用字段精度与格式校验", precondition: "新建项目页", steps: "输入超过两位小数或非法字符金额提交", expected: "按规则拦截或规范化并给出提示", priority: "P1", type: "boundary", coverage: "金额输入校验" },
+  { scene: "招标文件大小超限与替换上传", precondition: "新建项目页", steps: "上传超大文件或重复上传文件", expected: "超限拦截且重复上传以最新文件为准", priority: "P1", type: "negative", coverage: "文件上传细节" },
+  { scene: "新建项目按钮防重复提交", precondition: "表单填写完整", steps: "连续快速点击新建项目按钮", expected: "只创建一条记录", priority: "P0", type: "negative", coverage: "提交幂等" },
 ]);
 
 batch("投标报名与审核", "REG", [
