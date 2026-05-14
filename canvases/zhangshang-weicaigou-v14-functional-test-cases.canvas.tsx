@@ -113,10 +113,11 @@ batch("招标发布", "PUB", [
   { scene: "招标类型未选择拦截", precondition: "新建项目页", steps: "不选招标类型直接提交", expected: "提示请选择招标类型", priority: "P0", type: "boundary", coverage: "下拉必选" },
   { scene: "开标与获取文件时间顺序校验", precondition: "新建项目页", steps: "设置获取结束晚于开标时间提交", expected: "提示时间顺序非法并拦截", priority: "P1", type: "boundary", coverage: "时序校验" },
   { scene: "招标文件可为空发布成功", precondition: "新建项目页", steps: "不上传招标文件其余合法并发布", expected: "发布成功且不强制上传", priority: "P0", type: "positive", coverage: "招标文件可选" },
+  { scene: "招标文件多文件上传发布", precondition: "新建项目页", steps: "上传多个合法附件后发布", expected: "发布成功且列表展示全部文件", priority: "P0", type: "positive", coverage: "招标文件多文件" },
   { scene: "投标保证金负数输入拦截", precondition: "新建项目页", steps: "输入负数保证金提交", expected: "提示金额非法并阻止提交", priority: "P1", type: "negative", coverage: "保证金金额" },
   { scene: "新建项目页默认值与开关回显", precondition: "新建项目页", steps: "观察默认值并切换开关后保存重进", expected: "默认值正确且回显与最终选择一致", priority: "P1", type: "positive", coverage: "默认值与回显" },
   { scene: "费用字段精度与格式校验", precondition: "新建项目页", steps: "输入超过两位小数或非法字符金额提交", expected: "按规则拦截或规范化并给出提示", priority: "P1", type: "boundary", coverage: "金额输入校验" },
-  { scene: "招标文件大小超限与替换上传", precondition: "新建项目页", steps: "上传超大文件或重复上传文件", expected: "超限拦截且重复上传以最新文件为准", priority: "P1", type: "negative", coverage: "文件上传细节" },
+  { scene: "招标文件大小超限与替换上传", precondition: "新建项目页", steps: "上传超大文件或重复上传文件", expected: "超限拦截；多文件场景下合法文件保留", priority: "P1", type: "negative", coverage: "文件上传细节" },
   { scene: "新建项目按钮防重复提交", precondition: "表单填写完整", steps: "连续快速点击新建项目按钮", expected: "只创建一条记录", priority: "P0", type: "negative", coverage: "提交幂等" },
 ]);
 
@@ -136,7 +137,7 @@ batch("投标报名与审核", "REG", [
   { scene: "两项费用全部缴纳", precondition: "待缴费状态", steps: "完成两项支付", expected: "显示已缴费；有招标文件则可下载否则提示暂无", priority: "P0", type: "positive", coverage: "缴费完成" },
   { scene: "微信支付失败", precondition: "可调起微信支付", steps: "支付流程中取消或失败", expected: "状态不变仍待缴费", priority: "P1", type: "negative", coverage: "支付失败分支" },
   { scene: "支付成功回调幂等", precondition: "支付成功且回调可能重试", steps: "模拟重复回调", expected: "仅记一次有效支付记录", priority: "P1", type: "negative", coverage: "幂等性" },
-  { scene: "下载招标文件成功", precondition: "已完成全部缴费且项目已上传招标文件", steps: "点击下载招标文件", expected: "可查看/下载文件", priority: "P0", type: "positive", coverage: "文件获取" },
+  { scene: "下载招标文件成功", precondition: "已完成全部缴费且项目已上传招标文件", steps: "进入下载入口查看列表并逐个或打包下载", expected: "多文件列表完整且均可获取", priority: "P0", type: "positive", coverage: "文件获取" },
   { scene: "未上传招标文件缴费后下载门禁", precondition: "发布未上传招标文件且已缴费", steps: "点击下载招标文件", expected: "置灰或提示暂无文件不误判未缴费", priority: "P1", type: "boundary", coverage: "文件缺失门禁" },
   { scene: "未缴费尝试下载文件", precondition: "待缴费状态", steps: "点击下载招标文件", expected: "被拦截并提示需先缴费", priority: "P0", type: "negative", coverage: "门禁校验" },
   { scene: "项目经理报名审核通过", precondition: "有待审核报名", steps: "报名审核点击通过", expected: "状态变待缴费", priority: "P0", type: "positive", coverage: "审核通过" },
