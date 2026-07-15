@@ -1,11 +1,51 @@
 {
   "base_url": "https://www.bidding.shanxiguandian.com",
   "tokens": {
-    "project_manager": "PASTE_PM_TOKEN_HERE",
-    "bidder": "PASTE_BIDDER_TOKEN_HERE"
+    "project_manager": "41ecfede938eb984fe6cfe94c185688f",
+    "bidders": [
+      {
+        "name": "投标人-13825110210",
+        "token": "e016124f0ee365edbe1440d91f9857e3",
+        "register": {
+          "company_name": "投标人A公司",
+          "company_address": "山西省太原市",
+          "contact": "投标人A",
+          "mobile": "13825110210"
+        },
+        "submit": {
+          "remark": "投标人A自动化递交"
+        }
+      },
+      {
+        "name": "投标人-13246829826",
+        "token": "7e8a8eb2eb79d2e50dc62765c4bef368",
+        "register": {
+          "company_name": "投标人B公司",
+          "company_address": "山西省太原市",
+          "contact": "投标人B",
+          "mobile": "13246829826"
+        },
+        "submit": {
+          "remark": "投标人B自动化递交"
+        }
+      },
+      {
+        "name": "投标人-前端开发",
+        "token": "6a717729bb9d4e75677db82ba7aae838",
+        "register": {
+          "company_name": "投标人C公司",
+          "company_address": "山西省太原市",
+          "contact": "前端开发",
+          "mobile": "13266312331"
+        },
+        "submit": {
+          "remark": "投标人C自动化递交"
+        }
+      }
+    ]
   },
   "publish": {
-    "title": "自动化测试-公示项目",
+    "title": "自动化测试-三投标人项目",
     "cate_id": 1,
     "company_id": 2,
     "pattern_id": 1,
@@ -20,13 +60,10 @@
     "platform_price": "1.00",
     "deposit": "0.00",
     "price": "0.00",
-    "intro": "<p>自动化测试项目</p>"
+    "intro": "<p>三投标人自动化测试项目</p>"
   },
   "register": {
-    "company_name": "测试投标单位",
-    "company_address": "山西省太原市",
-    "contact": "张三",
-    "mobile": "13800000000"
+    "company_address": "山西省太原市"
   },
   "payment": {
     "enabled": true,
@@ -36,7 +73,6 @@
     "poll_sec": 5
   },
   "submit": {
-    "upload_file": "/path/to/tender-file.pdf",
-    "remark": "自动化递交"
+    "upload_file": "/path/to/tender-file.pdf"
   }
 }

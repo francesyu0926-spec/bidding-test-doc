@@ -91,6 +91,9 @@ class ZjgjClient:
             params={"project_id": project_id},
         )
 
+    def get_user_profile(self) -> dict[str, Any]:
+        return self.request("GET", "api/user/index", require_auth=True)
+
     # --- stage 1: publish ---
 
     def get_publicity_cate(self) -> dict[str, Any]:
