@@ -1,0 +1,42 @@
+{
+  "base_url": "https://www.bidding.shanxiguandian.com",
+  "tokens": {
+    "project_manager": "PASTE_PM_TOKEN_HERE",
+    "bidder": "PASTE_BIDDER_TOKEN_HERE"
+  },
+  "publish": {
+    "title": "自动化测试-公示项目",
+    "cate_id": 1,
+    "company_id": 2,
+    "pattern_id": 1,
+    "industry_id": 6,
+    "username": "测试招标人",
+    "address": "山西省太原市",
+    "region": "140000,140100",
+    "is_audit": 0,
+    "is_min": 2,
+    "is_bid_section": 0,
+    "file_price": "1.00",
+    "platform_price": "1.00",
+    "deposit": "0.00",
+    "price": "0.00",
+    "intro": "<p>自动化测试项目</p>"
+  },
+  "register": {
+    "company_name": "测试投标单位",
+    "company_address": "山西省太原市",
+    "contact": "张三",
+    "mobile": "13800000000"
+  },
+  "payment": {
+    "enabled": true,
+    "pay_way": "bank",
+    "use_v3": true,
+    "wait_timeout_sec": 0,
+    "poll_sec": 5
+  },
+  "submit": {
+    "upload_file": "/path/to/tender-file.pdf",
+    "remark": "自动化递交"
+  }
+}
