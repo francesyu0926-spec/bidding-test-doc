@@ -42,10 +42,28 @@
           "remark": "投标人C自动化递交"
         }
       }
+    ],
+    "experts": [
+      {
+        "name": "专家-测试peng",
+        "token": "2dc7d42b334a80f5a9f468804b4c804e",
+        "expert_id": 30,
+        "invite": {
+          "major_ids": "916,917"
+        }
+      },
+      {
+        "name": "专家-数据廖",
+        "token": "1961087d90c565e4620b9a98b69a8b91",
+        "expert_id": 23,
+        "invite": {
+          "major_ids": "221"
+        }
+      }
     ]
   },
   "publish": {
-    "title": "自动化测试-三投标人项目",
+    "title": "自动化测试-三投标人双专家项目",
     "cate_id": 1,
     "company_id": 2,
     "pattern_id": 1,
@@ -60,7 +78,7 @@
     "platform_price": "1.00",
     "deposit": "0.00",
     "price": "0.00",
-    "intro": "<p>三投标人自动化测试项目</p>"
+    "intro": "<p>三投标人双专家自动化测试项目</p>"
   },
   "register": {
     "company_address": "山西省太原市"
@@ -74,5 +92,22 @@
   },
   "submit": {
     "upload_file": "/path/to/tender-file.pdf"
+  },
+  "experts": {
+    "enabled": true
+  },
+  "expert_invite": {
+    "enabled": false,
+    "province": "440000",
+    "city": "440100",
+    "extract_way": 2,
+    "type": 1,
+    "use_time": 1
+  },
+  "expert_actions": {
+    "confirm": true,
+    "sign": false,
+    "wait_invite_timeout_sec": 10,
+    "poll_sec": 2
   }
 }

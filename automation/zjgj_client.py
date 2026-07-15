@@ -178,3 +178,33 @@ class ZjgjClient:
             params={"tender_id": tender_id, "section_id": section_id},
             require_auth=True,
         )
+
+    # --- expert ---
+
+    def get_expert_profile(self) -> dict[str, Any]:
+        return self.request("GET", "api/expert/info", require_auth=True)
+
+    def list_expert_projects(self, page: int = 1, limit: int = 20, status: int | None = None) -> dict[str, Any]:
+        params: dict[str, Any] = {"page": page, "limit": limit}
+        if status is not None:
+            params["status"] = status
+        return self.request("GET", "api/expert/myList", params=params, require_auth=True)
+
+    def add_expert_to_project(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self.request("POST", "api/manage/addExpert", data=payload, require_auth=True)
+
+    def confirm_expert_invite(self, invite_id: int, status: int = 1) -> dict[str, Any]:
+        return self.request(
+            "POST",
+            "api/expert/confirm",
+            data={"invite_id": invite_id, "status": status},
+            require_auth=True,
+        )
+
+    def expert_sign_in(self, project_id: int, section_id: int, invite_id: int) -> dict[str, Any]:
+        return self.request(
+            "POST",
+            "api/expert/sign",
+            data={"project_id": project_id, "section_id": section_id, "invite_id": invite_id},
+            require_auth=True,
+        )

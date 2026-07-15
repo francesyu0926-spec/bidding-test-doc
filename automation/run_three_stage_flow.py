@@ -5,6 +5,7 @@ Stages:
 1. Publish publicity project (project manager token)
 2. Register and pay (one or more bidder tokens)
 3. Submit tender files (one or more bidder tokens)
+4. Invite, confirm and sign in experts (optional, one or more expert tokens)
 """
 
 from __future__ import annotations
@@ -82,7 +83,165 @@ def normalize_bidders(tokens: dict[str, Any]) -> list[dict[str, Any]]:
     return []
 
 
+def normalize_experts(tokens: dict[str, Any]) -> list[dict[str, Any]]:
+    experts = tokens.get("experts")
+    if experts:
+        normalized: list[dict[str, Any]] = []
+        for index, item in enumerate(experts):
+            if isinstance(item, str):
+                normalized.append({"name": f"expert-{index + 1}", "token": item})
+            elif isinstance(item, dict) and item.get("token"):
+                normalized.append(item)
+            else:
+                raise SystemExit(f"Invalid expert entry at index {index}: {item!r}")
+        return normalized
+
+    single = tokens.get("expert")
+    if single:
+        return [{"name": "expert-1", "token": single}]
+    return []
+
+
 def bidder_label(bidder_cfg: dict[str, Any], profile: dict[str, Any] | None = None) -> str:
+    if bidder_cfg.get("name"):
+        return str(bidder_cfg["name"])
+    if profile:
+        data = profile.get("data") or {}
+        nickname = data.get("nickname") or data.get("mobile") or data.get("code")
+        if nickname:
+            return str(nickname)
+    token = bidder_cfg.get("token", "")
+    return f"token-{token[:8]}"
+
+
+def expert_label(expert_cfg: dict[str, Any], profile: dict[str, Any] | None = None) -> str:
+    if expert_cfg.get("name"):
+        return str(expert_cfg["name"])
+    if profile:
+        data = profile.get("data") or {}
+        name = data.get("name") or data.get("nickname")
+        if name:
+            return str(name)
+        user = data.get("user") or {}
+        if user.get("nickname"):
+            return str(user["nickname"])
+    token = expert_cfg.get("token", "")
+    return f"token-{token[:8]}"
+
+
+def resolve_expert_id(expert_cfg: dict[str, Any], client: ZjgjClient) -> int:
+    if expert_cfg.get("expert_id") is not None:
+        return int(expert_cfg["expert_id"])
+    profile = client.get_expert_profile()
+    expert_id = extract_id(profile, "id")
+    if expert_id is None:
+        data = profile.get("data") or {}
+        if data.get("id") is not None:
+            expert_id = int(data["id"])
+    if expert_id is None:
+        raise ZjgjApiError(-1, "unable to resolve expert_id", profile)
+    return expert_id
+
+
+def find_expert_invite_id(
+    client: ZjgjClient,
+    project_id: int,
+    *,
+    timeout_sec: int,
+    poll_sec: int,
+) -> int | None:
+    if timeout_sec <= 0:
+        listing = client.list_expert_projects(page=1, limit=50)
+        for item in (listing.get("data") or {}).get("list", []):
+            if int(item.get("project_id", -1)) == project_id:
+                invite_id = item.get("invite_id") or item.get("id")
+                if invite_id is not None:
+                    return int(invite_id)
+        return None
+
+    deadline = time.time() + timeout_sec
+    while time.time() < deadline:
+        listing = client.list_expert_projects(page=1, limit=50)
+        for item in (listing.get("data") or {}).get("list", []):
+            if int(item.get("project_id", -1)) == project_id:
+                invite_id = item.get("invite_id") or item.get("id")
+                if invite_id is not None:
+                    return int(invite_id)
+        time.sleep(poll_sec)
+    return None
+
+
+def run_expert_flow(
+    expert_cfg: dict[str, Any],
+    *,
+    base_url: str,
+    pm: ZjgjClient,
+    project_id: int,
+    section_id: int,
+    config: dict,
+) -> dict[str, Any]:
+    token = expert_cfg["token"]
+    client = ZjgjClient(base_url=base_url, token=token)
+    profile = client.get_expert_profile()
+    label = expert_label(expert_cfg, profile)
+    print(f"=== expert: {label} ===")
+
+    expert_data = profile.get("data") or {}
+    expert_id = resolve_expert_id(expert_cfg, client)
+    invite_cfg = {**config.get("expert_invite", {}), **expert_cfg.get("invite", {})}
+    invite_id = expert_cfg.get("invite_id")
+    invite_resp = None
+
+    if invite_cfg.get("enabled", True) and invite_id is None:
+        invite_payload = {
+            "project_id": project_id,
+            "section_id": section_id,
+            "expert_id": expert_id,
+            "province": invite_cfg.get("province") or expert_data.get("province"),
+            "city": invite_cfg.get("city") or expert_data.get("city"),
+            "major_ids": invite_cfg.get("major_ids") or expert_data.get("major_ids"),
+            **{
+                k: v
+                for k, v in invite_cfg.items()
+                if k not in {"enabled", "province", "city", "major_ids", "wait_timeout_sec", "poll_sec"}
+            },
+        }
+        invite_resp = pm.add_expert_to_project(invite_payload)
+        invite_id = extract_id(invite_resp, "invite_id", "id")
+        print(f"[{label}] expert invite request sent")
+
+    expert_actions = config.get("expert_actions", {})
+    if invite_id is None:
+        invite_id = find_expert_invite_id(
+            client,
+            project_id,
+            timeout_sec=int(expert_actions.get("wait_invite_timeout_sec", 10)),
+            poll_sec=int(expert_actions.get("poll_sec", 2)),
+        )
+
+    confirm_resp = None
+    sign_resp = None
+    if invite_id is not None and expert_actions.get("confirm", True):
+        confirm_resp = client.confirm_expert_invite(int(invite_id), status=1)
+        print(f"[{label}] expert invite confirmed: invite_id={invite_id}")
+
+    if invite_id is not None and expert_actions.get("sign", False):
+        sign_resp = client.expert_sign_in(project_id, section_id, int(invite_id))
+        print(f"[{label}] expert signed in")
+
+    user = expert_data.get("user") or {}
+    return {
+        "name": label,
+        "expert_id": expert_id,
+        "mobile": user.get("mobile") or expert_data.get("mobile"),
+        "major_name": expert_data.get("major_name"),
+        "invite_id": invite_id,
+        "invite": invite_resp,
+        "confirm": confirm_resp,
+        "sign": sign_resp,
+    }
+
+
     if bidder_cfg.get("name"):
         return str(bidder_cfg["name"])
     if profile:
@@ -268,6 +427,25 @@ def validate_tokens(config: dict) -> dict:
                 "tenders": len((client.list_my_tenders(page=1, limit=1).get("data") or {}).get("list", [])),
             }
         )
+
+    experts = normalize_experts(config.get("tokens", {}))
+    result["experts"] = []
+    for expert_cfg in experts:
+        client = ZjgjClient(base_url=base_url, token=expert_cfg["token"])
+        profile = client.get_expert_profile()
+        label = expert_label(expert_cfg, profile)
+        data = profile.get("data") or {}
+        user = data.get("user") or {}
+        result["experts"].append(
+            {
+                "name": label,
+                "expert_id": data.get("id"),
+                "mobile": user.get("mobile") or data.get("mobile"),
+                "major_name": data.get("major_name"),
+                "expert_status": data.get("status"),
+                "projects": len((client.list_expert_projects(page=1, limit=1).get("data") or {}).get("list", [])),
+            }
+        )
     return result
 
 
@@ -277,7 +455,7 @@ def run_flow(config: dict, *, dry_run: bool) -> dict:
     bidders = normalize_bidders(config.get("tokens", {}))
 
     if dry_run:
-        print("[dry-run] validating project manager and all bidder tokens")
+        print("[dry-run] validating project manager, bidders and experts")
         return validate_tokens(config)
 
     if not pm_token or not bidders:
@@ -287,7 +465,8 @@ def run_flow(config: dict, *, dry_run: bool) -> dict:
         )
 
     pm = ZjgjClient(base_url=base_url, token=pm_token)
-    result: dict[str, Any] = {"base_url": base_url, "bidders": []}
+    experts = normalize_experts(config.get("tokens", {}))
+    result: dict[str, Any] = {"base_url": base_url, "bidders": [], "experts": []}
 
     publish_payload = build_publish_payload(config)
     create_resp = pm.create_publicity_project(publish_payload)
@@ -325,6 +504,19 @@ def run_flow(config: dict, *, dry_run: bool) -> dict:
             config=config,
         )
         result["bidders"].append(bidder_result)
+
+    expert_cfg_root = config.get("experts", {})
+    if experts and expert_cfg_root.get("enabled", True):
+        for expert_cfg in experts:
+            expert_result = run_expert_flow(
+                expert_cfg,
+                base_url=base_url,
+                pm=pm,
+                project_id=project_id,
+                section_id=section_id,
+                config=config,
+            )
+            result["experts"].append(expert_result)
 
     return result
 
