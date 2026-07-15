@@ -190,6 +190,30 @@ class ZjgjClient:
             params["status"] = status
         return self.request("GET", "api/expert/myList", params=params, require_auth=True)
 
+    def list_expert_invites(self, page: int = 1, limit: int = 20, status: int = 0) -> dict[str, Any]:
+        return self.request(
+            "GET",
+            "api/expert/list",
+            params={"page": page, "limit": limit, "status": status},
+            require_auth=True,
+        )
+
+    def get_user_notifications(self, notify_type: int = 2, page: int = 1, limit: int = 20) -> dict[str, Any]:
+        return self.request(
+            "GET",
+            f"api/user/notify/{notify_type}",
+            params={"page": page, "limit": limit},
+            require_auth=True,
+        )
+
+    def get_manage_invite_info(self, project_id: int, section_id: int) -> dict[str, Any]:
+        return self.request(
+            "GET",
+            "api/manage/inviteInfo",
+            params={"project_id": project_id, "section_id": section_id},
+            require_auth=True,
+        )
+
     def add_expert_to_project(self, payload: dict[str, Any]) -> dict[str, Any]:
         return self.request("POST", "api/manage/addExpert", data=payload, require_auth=True)
 
