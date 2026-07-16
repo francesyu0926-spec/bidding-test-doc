@@ -76,6 +76,9 @@
     "is_audit": 0,
     "is_min": 2,
     "is_bid_section": 0,
+    "open_in_minutes": 3,
+    "wait_open_sec": 120,
+    "poll_sec": 5,
     "file_price": "1.00",
     "platform_price": "1.00",
     "deposit": "0.00",
@@ -83,17 +86,27 @@
     "intro": "<p>三投标人双专家自动化测试项目</p>"
   },
   "register": {
-    "company_address": "山西省太原市"
+    "company_address": "山西省忻州市",
+    "contact_phone": "13246829826",
+    "email": "zhongyan@example.com"
   },
   "payment": {
     "enabled": true,
+    "mode": "admin_mock",
     "pay_way": "bank",
-    "use_v3": true,
+    "use_v3": false,
     "wait_timeout_sec": 0,
     "poll_sec": 5
   },
   "submit": {
-    "upload_file": "/path/to/tender-file.pdf"
+    "amount": "10000.00",
+    "address": "山西省忻州市",
+    "deadline": "12个月",
+    "password": "123456",
+    "password_confirm": "123456"
+  },
+  "flow": {
+    "expert_agree_invite": true
   },
   "experts": {
     "enabled": true
@@ -108,7 +121,9 @@
     "address": "山西省太原市"
   },
   "expert_actions": {
-    "confirm": true,
+    "audit": true,
+    "confirm": false,
+    "confirm_status": 2,
     "sign": true,
     "wait_invite_timeout_sec": 15,
     "poll_sec": 2
