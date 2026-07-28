@@ -2,14 +2,15 @@
 """Execute bid-opening stage operations for existing ZJGJ projects.
 
 Workflow (aligned with ZJGJ backend source):
-1. Wait until publish start_time (开标时间) is reached
+1. Wait until publish start_time (????? is reached
 2. PM: save review/scoring table (saveReview) before expert invite
 3. PM: invite experts (addExpert) if none assigned
-4. PM: pass expert audit — POST api/manage/addExpert with check=1 (通过审核)
+4. PM: pass expert audit ??POST api/manage/addExpert with check=1 (????)
 5. Optional: experts agree invite (api/expert/confirm) if expert_actions.confirm=true
 6. Poll section.state until bid opened
 7. Experts: sign in (api/expert/sign; invite_id from inviteInfo.users[].id)
-8. Bidders: 签字解密 via api/tender/password then api/tender/signature (sets sign)
+7b. Optional: ?????(GET api/expert/leaderVote) if expert_actions.elect_leader=true
+8. Bidders: ???? via api/tender/password then api/tender/signature (sets sign)
 9. Report status from manage/myList, section.state, getProgress
 
 Use --force-times to backdate start/file_end into the past (legacy; near-future publish is preferred).
@@ -36,6 +37,7 @@ from run_three_stage_flow import (
     normalize_publish_images,
     parse_time,
     resolve_expert_uid,
+    run_expert_leader_election,
     run_expert_sign_all,
     save_project_review_config,
     section_state,
@@ -46,14 +48,14 @@ from zjgj_client import ZjgjApiError, ZjgjClient
 
 DEFAULT_EXPERTS = [
     {
-        "name": "专家-测试peng",
+        "name": "??-??peng",
         "token": "2dc7d42b334a80f5a9f468804b4c804e",
         "expert_id": 30,
         "uid": 11286,
         "invite": {"major_ids": "916,917"},
     },
     {
-        "name": "专家-数据廖",
+        "name": "??-???",
         "token": "1961087d90c565e4620b9a98b69a8b91",
         "expert_id": 23,
         "uid": 7882,
@@ -83,8 +85,8 @@ PROJECT_BIDDER_TOKENS: dict[int, list[str]] = {
     2063: [DEFAULT_BIDDERS[0]["token"], DEFAULT_BIDDERS[1]["token"], DEFAULT_BIDDERS[2]["token"]],
 }
 
-STATUS_LABELS = {1: "已开标/评审中", 2: "投标中", 3: "评审后续", 4: "已定标/废标"}
-SECTION_STATE_LABELS = {1: "已开标", 2: "投标中"}
+STATUS_LABELS = {1: "???/???", 2: "???", 3: "????", 4: "???/??"}
+SECTION_STATE_LABELS = {1: "???", 2: "???"}
 
 
 def load_json(path: Path) -> dict:
@@ -388,6 +390,26 @@ def run_project(
         except ZjgjApiError as exc:
             result["errors"].append(f"expert_sign: {exc}")
             print(f"[{project_id}] expert sign failed: {exc}")
+
+        try:
+            leader_result = run_expert_leader_election(
+                project_id,
+                section_id,
+                experts,
+                base_url=base_url,
+                config=config,
+                pm=pm,
+            )
+            if not leader_result.get("skipped"):
+                result["operations"].append({"action": "expert_leader_election", **leader_result})
+                leader_elected = leader_result.get("leader_elected")
+                all_voted = leader_result.get("all_voted")
+                leader_stuck = leader_elected is False and all_voted is False
+                if not leader_result.get("ok") and leader_stuck:
+                    result["errors"].append("expert_leader_election incomplete")
+        except ZjgjApiError as exc:
+            result["errors"].append(f"expert_leader_election: {exc}")
+            print(f"[{project_id}] expert leader election failed: {exc}")
 
     try:
         decrypt_results = decrypt_tenders(

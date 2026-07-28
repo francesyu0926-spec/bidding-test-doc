@@ -1,10 +1,17 @@
 {
   "base_url": "https://www.bidding.shanxiguandian.com",
+  "extraction": {
+    "use_ocr": true,
+    "notes": "When use_ocr is true (default), scanned PDFs without a text layer are OCR'd via Tesseract after native pypdf extraction returns empty. Set use_ocr to false to skip OCR. Install Tesseract and chi_sim; see OCR_SETUP.md. Default (flags absent/false): 项目名称, publish.username (招标�?招标�?招标单位), and register.company_name/contact/contact_phone (投标单位) are taken from 招标文件/投标文件 PDF text when using run_project_folder.py. Opt-in filename modes (B/4 only): set company_name_from_filename and/or tenderer_name_from_filename to true to derive names from PDF basenames instead.",
+    "full_flow": "For publish→decrypt end-to-end runs use run_full_automation.py with config.full_flow.example.json (or config.staff.json for I/1 staff tokens)."
+  },
+  "company_name_from_filename": false,
+  "tenderer_name_from_filename": false,
   "tokens": {
     "project_manager": "41ecfede938eb984fe6cfe94c185688f",
     "bidders": [
       {
-        "name": "投标人-13825110210",
+        "name": "投标�?13825110210",
         "token": "e016124f0ee365edbe1440d91f9857e3",
         "register": {
           "company_name": "投标人A公司",
@@ -17,7 +24,7 @@
         }
       },
       {
-        "name": "投标人-13246829826",
+        "name": "投标�?13246829826",
         "token": "7e8a8eb2eb79d2e50dc62765c4bef368",
         "register": {
           "company_name": "投标人B公司",
@@ -30,12 +37,12 @@
         }
       },
       {
-        "name": "投标人-前端开发",
+        "name": "投标�?前端开�?,
         "token": "6a717729bb9d4e75677db82ba7aae838",
         "register": {
           "company_name": "投标人C公司",
           "company_address": "山西省太原市",
-          "contact": "前端开发",
+          "contact": "前端开�?,
           "mobile": "13266312331"
         },
         "submit": {
@@ -54,7 +61,7 @@
         }
       },
       {
-        "name": "专家-数据廖",
+        "name": "专家-数据�?,
         "token": "1961087d90c565e4620b9a98b69a8b91",
         "expert_id": 23,
         "uid": 7882,
@@ -65,12 +72,12 @@
     ]
   },
   "publish": {
-    "title": "自动化测试-三投标人双专家项目",
+    "title": "自动化测�?三投标人双专家项�?,
     "cate_id": 1,
     "company_id": 2,
     "pattern_id": 1,
     "industry_id": 6,
-    "username": "测试招标人",
+    "username": "测试招标�?,
     "address": "山西省太原市",
     "region": "140000,140100",
     "is_audit": 0,
@@ -125,7 +132,19 @@
     "confirm": false,
     "confirm_status": 2,
     "sign": true,
+    "elect_leader": false,
     "wait_invite_timeout_sec": 15,
     "poll_sec": 2
+  },
+  "equity": {
+    "use_associated_bids": true,
+    "report_path": "equity_tianyancha_report.json",
+    "attach_analysis_pdfs": false
+  },
+  "admin": {
+    "prefix": "/zjgj230214",
+    "name_env": "ZJGJ_ADMIN_NAME",
+    "password_env": "ZJGJ_ADMIN_PASSWORD",
+    "notes": "Legacy admin at {base_url}{prefix}/login/index.html. Set credentials via env, not in this file. Optional: pip install ddddocr for captcha OCR in ZjgjAdminClient.admin_login()."
   }
 }

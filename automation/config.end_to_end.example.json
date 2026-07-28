@@ -1,0 +1,204 @@
+{
+  "_comment": "??????????????? token??????????? run_end_to_end_flow.py ???",
+  "base_url": "https://www.bidding.shanxiguandian.com",
+  "verify_ssl": false,
+  "materials_folder": "d:\\??\\??????\\???\\I\\4",
+  "pm_uid": 11295,
+
+  "phases": {
+    "publish": true,
+    "bidders": true,
+    "experts": true,
+    "decrypt": true,
+    "review": true,
+    "report": true,
+    "notice": true
+  },
+
+  "leader": {
+    "_comment": "?? UID??? pushTenderReport????? token",
+    "uid": 11286
+  },
+
+  "extraction": {
+    "use_ocr": true,
+    "max_pages": 40,
+    "require_distinct_companies": true,
+    "company_fallback_by_pdf": {},
+    "upload_file_overrides_by_pdf": {
+      "_comment": "? PDF ?????? _upload_light_*.pdf ?????",
+      "?????????? ??.pdf": "_upload_light_?????????? ??.pdf"
+    }
+  },
+
+  "tokens": {
+    "project_manager": "YOUR_PM_TOKEN_HERE",
+    "bidders": [
+      {
+        "name": "Bidder-11291",
+        "uid": 11291,
+        "token": "BIDDER_1_TOKEN",
+        "register": {
+          "company_address": "??????",
+          "contact_phone": "15800042042",
+          "email": "bidder1@example.com"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "15800042042"
+        }
+      },
+      {
+        "name": "Bidder-8108",
+        "uid": 8108,
+        "token": "BIDDER_2_TOKEN",
+        "register": {
+          "company_address": "??????",
+          "contact_phone": "13266312331",
+          "email": "bidder2@example.com"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "13266312331"
+        }
+      },
+      {
+        "name": "Bidder-8143",
+        "uid": 8143,
+        "token": "BIDDER_3_TOKEN",
+        "register": {
+          "company_address": "??????",
+          "contact_phone": "17607391278",
+          "email": "bidder3@example.com"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "17607391278"
+        }
+      }
+    ],
+    "experts": [
+      {
+        "name": "Expert 1",
+        "uid": 11286,
+        "expert_id": 30,
+        "token": "EXPERT_1_TOKEN",
+        "invite": {}
+      },
+      {
+        "name": "Expert 2",
+        "uid": 7882,
+        "expert_id": 23,
+        "token": "EXPERT_2_TOKEN",
+        "invite": {}
+      },
+      {
+        "name": "Expert 3",
+        "uid": 11285,
+        "expert_id": 29,
+        "token": "EXPERT_3_TOKEN",
+        "invite": {}
+      }
+    ]
+  },
+
+  "token_refresh": {
+    "enabled": true,
+    "pm": {
+      "uid": 11295,
+      "mobile": "13246829826",
+      "token": "YOUR_PM_TOKEN_HERE"
+    },
+    "bidders": [
+      { "uid": 11291, "mobile": "15800042042", "name": "Bidder-11291", "token": "BIDDER_1_TOKEN" },
+      { "uid": 8108, "mobile": "13266312331", "name": "Bidder-8108", "token": "BIDDER_2_TOKEN" },
+      { "uid": 8143, "mobile": "17607391278", "name": "Bidder-8143", "token": "BIDDER_3_TOKEN" }
+    ],
+    "experts": [
+      { "uid": 11286, "mobile": "13824497617", "name": "Expert 1", "token": "EXPERT_1_TOKEN" },
+      { "uid": 7882, "mobile": "18802060705", "name": "Expert 2", "token": "EXPERT_2_TOKEN" },
+      { "uid": 11285, "mobile": "13246829826", "name": "Expert 3", "token": "EXPERT_3_TOKEN" }
+    ]
+  },
+
+  "publish": {
+    "cate_id": 1,
+    "company_id": 2,
+    "pattern_id": 1,
+    "industry_id": 6,
+    "address": "??????",
+    "region": "140000,140100",
+    "is_audit": 0,
+    "is_min": 2,
+    "is_bid_section": 0,
+    "open_in_minutes": 3,
+    "wait_open_sec": 240,
+    "poll_sec": 5,
+    "project_no_prefix": "BJZC-ZCHW-I4-AUTO-",
+    "file_price": "500.00",
+    "platform_price": "1.00",
+    "deposit": "0.00",
+    "price": "0.00"
+  },
+
+  "register": {
+    "company_address": "??????",
+    "email": "bidder@example.com"
+  },
+
+  "payment": {
+    "enabled": true,
+    "mode": "admin_mock",
+    "pay_way": "bank",
+    "use_v3": false
+  },
+
+  "submit": {
+    "amount": "10000.00",
+    "address": "??????",
+    "deadline": "12??",
+    "password": "123456",
+    "password_confirm": "123456"
+  },
+
+  "review": {
+    "enabled": true
+  },
+
+  "flow": {
+    "expert_agree_invite": true
+  },
+
+  "experts": {
+    "enabled": true
+  },
+
+  "expert_invite": {
+    "enabled": true,
+    "province": "440000",
+    "city": "440100",
+    "extract_way": 2,
+    "type": 1,
+    "take_time": 3,
+    "address": "??????"
+  },
+
+  "expert_actions": {
+    "audit": true,
+    "confirm": true,
+    "confirm_status": 2,
+    "sign": true,
+    "elect_leader": true,
+    "wait_invite_timeout_sec": 30,
+    "poll_sec": 2
+  },
+
+  "admin": {
+    "prefix": "/zjgj230214",
+    "name_env": "ZJGJ_ADMIN_NAME",
+    "password_env": "ZJGJ_ADMIN_PASSWORD"
+  }
+}

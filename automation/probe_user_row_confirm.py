@@ -17,7 +17,7 @@ print("users", json.dumps([{"id": u.get("id"), "uid": u.get("uid"), "name": u.ge
 
 experts = [
     ("专家-测试peng", "2dc7d42b334a80f5a9f468804b4c804e", 11286),
-    ("专家-数据廖", "1961087d90c565e4620b9a98b69a8b91", 7882),
+    ("专家-数据�?, "1961087d90c565e4620b9a98b69a8b91", 7882),
 ]
 
 # PM audit pass

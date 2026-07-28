@@ -18,10 +18,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from zjgj_client import ZjgjApiError, ZjgjClient, review_categories_total
+from zjgj_client import ZjgjApiError, ZjgjClient, leader_vote_already_done, review_categories_total
 
 REGISTER_STATUS_COMPLETED = 3
-BIDDING_DIR_NAMES = ("招标文件", "bidding", "bid-documents")
+BIDDING_DIR_NAMES = ("????", "bidding", "bid-documents")
 BIDDING_FILE_SUFFIXES = {".pdf", ".doc", ".docx", ".zip", ".rar"}
 
 
@@ -135,7 +135,7 @@ def load_config(path: Path) -> dict:
 
 
 def normalize_publish_images(images: Any) -> str | None:
-    """Normalize 招标文件 entries to [{name, tempFilePath}] for api/publicity/create."""
+    """Normalize ???? entries to [{name, tempFilePath}] for api/publicity/create."""
     if images is None:
         return None
     if isinstance(images, str):
@@ -217,7 +217,7 @@ def build_publish_payload(config: dict) -> dict:
         "platform_price": publish.get("platform_price", "1.00"),
         "deposit": publish.get("deposit", "0.00"),
         "price": publish.get("price", "0.00"),
-        "intro": publish.get("intro", "<p>自动化测试项目</p>"),
+        "intro": publish.get("intro", "<p>????????/p>"),
     }
     if publish.get("project_id") is not None:
         payload["id"] = int(publish["project_id"])
@@ -447,7 +447,7 @@ def resolve_expert_invite_id(
     )
 
 
-CONFIRM_ALREADY_DONE_MARKERS = ("已确认", "无需重复", "请勿重复")
+CONFIRM_ALREADY_DONE_MARKERS = ("???", "????", "????")
 
 
 def expert_confirm_already_done(message: str) -> bool:
@@ -461,7 +461,7 @@ def expert_audit_enabled(config: dict[str, Any]) -> bool:
     expert_actions = config.get("expert_actions", {})
     if "audit" in expert_actions:
         return bool(expert_actions["audit"])
-    # Backend has no PM 通过审核 endpoint; addExpert ignores check/is_check.
+    # Backend has no PM ???? endpoint; addExpert ignores check/is_check.
     return False
 
 
@@ -529,7 +529,7 @@ def confirm_expert_invite_for_cfg(
         result["ok"] = True
         result["confirm"] = confirm_resp
         result["msg"] = confirm_resp.get("msg")
-        print(f"[{label}] stage: expert agree invite ok (专家同意邀请): invite_id={invite_id} msg={confirm_resp.get('msg')}")
+        print(f"[{label}] stage: expert agree invite ok (???????: invite_id={invite_id} msg={confirm_resp.get('msg')}")
     except ZjgjApiError as exc:
         if expert_confirm_already_done(str(exc)):
             result["ok"] = True
@@ -586,7 +586,7 @@ def pass_expert_audit_for_project(
     pm: ZjgjClient,
     config: dict,
 ) -> dict[str, Any]:
-    """PM 通过审核 — not supported; addExpert ignores check/is_check."""
+    """PM ???? ??not supported; addExpert ignores check/is_check."""
     if not expert_audit_enabled(config):
         print("stage: expert audit skipped (disabled)")
         return {"skipped": True, "reason": "audit disabled"}
@@ -610,7 +610,7 @@ def pass_expert_audit_for_project(
         "users": payload.get("users"),
         "audit": audit_resp,
     }
-    print(f"stage: expert audit passed (通过审核): users={payload['users']} msg={audit_resp.get('msg')}")
+    print(f"stage: expert audit passed (????): users={payload['users']} msg={audit_resp.get('msg')}")
     return result
 
 
@@ -623,7 +623,7 @@ def audit_all_expert_invites(
     config: dict,
     pm: ZjgjClient,
 ) -> dict[str, Any]:
-    """PM-side 通过审核 for all invited experts (not api/expert/confirm)."""
+    """PM-side ???? for all invited experts (not api/expert/confirm)."""
     return pass_expert_audit_for_project(
         project_id,
         section_id,
@@ -670,7 +670,7 @@ def build_expert_invite_payload(
         "extract_way": invite_cfg.get("extract_way", 2),
         "take_time": invite_cfg.get("take_time", 3),
         "type": invite_cfg.get("type", 1),
-        "address": invite_cfg.get("address", "山西省太原市"),
+        "address": invite_cfg.get("address", "??????"),
         "users": ",".join(str(uid) for uid in expert_uids),
         **{
             k: v
@@ -699,7 +699,7 @@ def save_project_review_config(
     section_id: int,
     config: dict,
 ) -> dict[str, Any] | None:
-    """Save review/scoring table (评审表格) before expert invite."""
+    """Save review/scoring table (????) before expert invite."""
     review_cfg = config.get("review") or {}
     if review_cfg.get("enabled") is False:
         print("stage: review config skipped (disabled)")
@@ -850,6 +850,207 @@ def run_expert_sign_all(
     return results
 
 
+def fetch_expert_vote_status(
+    pm: ZjgjClient | None,
+    client: ZjgjClient,
+    project_id: int,
+    section_id: int,
+    expert_uid: int,
+) -> dict[str, Any]:
+    """Read is_vote / is_leader / sign_id from inviteInfo and api/expert/list."""
+    invite_row: dict[str, Any] = {}
+    if pm is not None:
+        invite = pm.get_manage_invite_info(project_id, section_id).get("data") or {}
+        info = invite.get("info") or {}
+        for user in info.get("users") or []:
+            if int(user.get("uid", -1)) == expert_uid:
+                invite_row = user
+                break
+
+    list_row: dict[str, Any] = {}
+    for status in (0, 1, 2, 3, 4, 6):
+        listing = client.list_expert_invites(page=1, limit=50, status=status)
+        for item in (listing.get("data") or {}).get("list", []):
+            if int(item.get("project_id", -1)) == project_id:
+                list_row = item
+                break
+        if list_row:
+            break
+
+    is_vote = list_row.get("is_vote") if list_row.get("is_vote") is not None else invite_row.get("is_vote")
+    is_leader = list_row.get("is_leader") if list_row.get("is_leader") is not None else invite_row.get("is_leader")
+    return {
+        "is_vote": is_vote,
+        "is_leader": is_leader,
+        "sign_id": list_row.get("sign_id"),
+    }
+
+
+def summarize_leader_election_status(
+    expert_cfgs: list[dict[str, Any]],
+    clients: list[ZjgjClient],
+    pm: ZjgjClient | None,
+    project_id: int,
+    section_id: int,
+) -> tuple[bool, bool, list[dict[str, Any]]]:
+    statuses: list[dict[str, Any]] = []
+    for expert_cfg, client in zip(expert_cfgs, clients):
+        uid = int(expert_cfg.get("uid") or resolve_expert_uid(expert_cfg, client))
+        row = fetch_expert_vote_status(pm, client, project_id, section_id, uid)
+        statuses.append({"uid": uid, **row})
+    leader_elected = any(row.get("is_leader") == 1 for row in statuses)
+    all_voted = bool(statuses) and all(row.get("is_vote") == 1 for row in statuses)
+    return leader_elected, all_voted, statuses
+
+
+def resolve_leader_sign_id(
+    project_id: int,
+    section_id: int,
+    expert_cfgs: list[dict[str, Any]],
+    clients: list[ZjgjClient],
+    pm: ZjgjClient | None,
+    *,
+    leader_sign_id: int | None = None,
+    vote_statuses: list[dict[str, Any]] | None = None,
+) -> int | None:
+    if leader_sign_id is not None:
+        return int(leader_sign_id)
+
+    statuses = vote_statuses
+    if statuses is None:
+        _, _, statuses = summarize_leader_election_status(expert_cfgs, clients, pm, project_id, section_id)
+
+    for row in statuses:
+        if row.get("is_leader") == 1 and row.get("sign_id"):
+            return int(row["sign_id"])
+    for row in statuses:
+        if row.get("sign_id"):
+            return int(row["sign_id"])
+
+    discovered = clients[0].discover_leader_candidate_sign_ids(project_id, section_id)
+    return int(discovered[0]) if discovered else None
+
+
+def run_expert_leader_election(
+    project_id: int,
+    section_id: int,
+    expert_cfgs: list[dict[str, Any]],
+    *,
+    base_url: str,
+    config: dict,
+    leader_sign_id: int | None = None,
+    pm: ZjgjClient | None = None,
+) -> dict[str, Any]:
+    """Opt-in: each signed expert votes once via GET api/expert/leaderVote."""
+    expert_actions = config.get("expert_actions", {})
+    if not expert_actions.get("elect_leader", False):
+        return {"skipped": True, "reason": "elect_leader disabled"}
+
+    if not expert_cfgs:
+        return {"ok": False, "error": "no experts configured"}
+
+    clients = [make_client(base_url, expert_cfg["token"], config) for expert_cfg in expert_cfgs]
+    leader_elected, all_voted, vote_statuses = summarize_leader_election_status(
+        expert_cfgs, clients, pm, project_id, section_id
+    )
+
+    if leader_elected and all_voted:
+        target_sign_id = resolve_leader_sign_id(
+            project_id,
+            section_id,
+            expert_cfgs,
+            clients,
+            pm,
+            leader_sign_id=leader_sign_id,
+            vote_statuses=vote_statuses,
+        )
+        print(f"stage: leader election skipped (already complete, sign_id={target_sign_id})")
+        return {
+            "leader_sign_id": target_sign_id,
+            "experts": [
+                {
+                    "uid": row.get("uid"),
+                    "ok": True,
+                    "skipped": True,
+                    "reason": "already voted (is_vote=1)",
+                    "is_vote": row.get("is_vote"),
+                    "is_leader": row.get("is_leader"),
+                }
+                for row in vote_statuses
+            ],
+            "ok": True,
+            "leader_elected": True,
+            "all_voted": True,
+            "skipped": True,
+            "reason": "leader already elected and all experts voted",
+        }
+
+    target_sign_id = resolve_leader_sign_id(
+        project_id,
+        section_id,
+        expert_cfgs,
+        clients,
+        pm,
+        leader_sign_id=leader_sign_id,
+        vote_statuses=vote_statuses,
+    )
+    if target_sign_id is None:
+        return {"ok": False, "error": "no leader candidate sign_id found", "leader_elected": leader_elected, "all_voted": all_voted}
+    if leader_sign_id is None:
+        print(f"stage: leader election using sign_id={target_sign_id}")
+
+    results: list[dict[str, Any]] = []
+    for expert_cfg, client in zip(expert_cfgs, clients):
+        uid = int(expert_cfg.get("uid") or resolve_expert_uid(expert_cfg, client))
+        label = expert_cfg.get("name") or expert_cfg.get("mobile") or "expert"
+        vote_row = next((row for row in vote_statuses if row.get("uid") == uid), {})
+        item: dict[str, Any] = {
+            "name": label,
+            "uid": uid,
+            "sign_id": target_sign_id,
+            "is_vote_before": vote_row.get("is_vote"),
+        }
+
+        if vote_row.get("is_vote") == 1:
+            item["ok"] = True
+            item["skipped"] = True
+            item["reason"] = "already voted (is_vote=1)"
+            item["msg"] = "idempotent skip"
+            results.append(item)
+            print(f"[{label}] leader vote skipped: already voted (is_vote=1)")
+            continue
+
+        try:
+            resp = client.vote_expert_leader(project_id, section_id, int(target_sign_id))
+            msg = str(resp.get("msg") or "")
+            item["ok"] = True
+            item["msg"] = msg
+            if leader_vote_already_done(msg):
+                item["already_voted"] = True
+        except ZjgjApiError as exc:
+            msg = str(exc)
+            item["ok"] = leader_vote_already_done(msg)
+            item["error"] = msg
+            item["msg"] = msg
+            if item["ok"]:
+                item["already_voted"] = True
+        results.append(item)
+        status = "ok" if item.get("ok") else "fail"
+        detail = item.get("msg") or item.get("error")
+        print(f"[{label}] leader vote {status}: sign_id={target_sign_id} {detail}")
+
+    leader_elected, all_voted, _ = summarize_leader_election_status(expert_cfgs, clients, pm, project_id, section_id)
+    ok_count = sum(1 for item in results if item.get("ok"))
+    print(f"stage: leader election {ok_count}/{len(results)} ok (sign_id={target_sign_id})")
+    return {
+        "leader_sign_id": target_sign_id,
+        "experts": results,
+        "ok": ok_count == len(results),
+        "leader_elected": leader_elected,
+        "all_voted": all_voted,
+    }
+
+
 def run_expert_flow(
     expert_cfg: dict[str, Any],
     *,
@@ -975,7 +1176,7 @@ def scan_bidding_files(project_dir: Path) -> list[str]:
 
 
 def resolve_publish_upload_files(config: dict[str, Any]) -> list[str]:
-    """Resolve 招标文件 paths for stage1 publish (config → project_folder → disk scan)."""
+    """Resolve ???? paths for stage1 publish (config ??project_folder ??disk scan)."""
     publish = config.get("publish") or {}
     folder = config.get("project_folder") or {}
     paths: list[str] = []
@@ -1006,7 +1207,7 @@ def publish_change_publicity(
     upload_paths: list[str] | None = None,
     images: str | None = None,
 ) -> dict[str, Any]:
-    """发布变更: POST api/publicity/create with id (same as admin /project/change/:id form)."""
+    """????: POST api/publicity/create with id (same as admin /project/change/:id form)."""
     project_info = client.get_publicity_project_info(project_id)
     data = project_info.get("data") or {}
     if not data:

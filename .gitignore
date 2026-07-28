@@ -1,1 +1,4 @@
 automation/__pycache__/
+
+.env.local
+automation/.env.local

@@ -1,0 +1,238 @@
+{
+  "_comment": "I/3 端到端 — PM 7882 (数据-廖)；投标人 11296/8143/11287/8108（4份PDF）；专家 11291/11286（expert_id=31/30）；禁止 uid 重叠；2专家；notice=true",
+  "base_url": "https://www.bidding.shanxiguandian.com",
+  "verify_ssl": false,
+  "materials_folder": "d:\\文件\\客户项目文件\\项目集\\I\\3",
+  "pm_uid": 7882,
+  "phases": {
+    "publish": true,
+    "bidders": true,
+    "experts": true,
+    "decrypt": true,
+    "review": true,
+    "report": true,
+    "notice": true
+  },
+  "leader": {
+    "uid": 11291
+  },
+  "extraction": {
+    "use_ocr": true,
+    "max_pages": 40,
+    "require_distinct_companies": true,
+    "company_fallback_by_pdf": {
+      "北京天驰君泰律师事务所响应文件-山西财经大学法律诉讼服务采购项目（ZCGF-ZCFW-260442 ）.pdf": "北京天驰君泰律师事务所",
+      "山西财经大学-响应文件-中吕.pdf": "山西中吕律师事务所",
+      "山西财经大学法律诉讼服务采购项目.pdf": "山西晋杰律师事务所",
+      "投标文件-山西岱安律师事务所.pdf": "山西岱安律师事务所"
+    },
+    "upload_file_overrides_by_pdf": {
+      "北京天驰君泰律师事务所响应文件-山西财经大学法律诉讼服务采购项目（ZCGF-ZCFW-260442 ）.pdf": "_upload_light_北京天驰君泰律师事务所响应文件-山西财经大学法律诉讼服务采购项目（ZCGF-ZCFW-260442 ）.pdf",
+      "山西财经大学-响应文件-中吕.pdf": "_upload_light_山西财经大学-响应文件-中吕.pdf",
+      "山西财经大学法律诉讼服务采购项目.pdf": "_upload_light_山西财经大学法律诉讼服务采购项目.pdf",
+      "投标文件-山西岱安律师事务所.pdf": "_upload_light_投标文件-山西岱安律师事务所.pdf"
+    }
+  },
+  "tokens": {
+    "project_manager": "YOUR_PM_TOKEN_HERE",
+    "bidders": [
+      {
+        "name": "Bidder-11296",
+        "uid": 11296,
+        "token": "YOUR_BIDDER_1_TOKEN",
+        "register": {
+          "company_address": "山西省太原市",
+          "contact_phone": "13729483065",
+          "email": "bidder11296@example.com"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "13729483065"
+        }
+      },
+      {
+        "name": "Bidder-8143",
+        "uid": 8143,
+        "token": "YOUR_TOKEN_HERE",
+        "register": {
+          "company_address": "山西省太原市",
+          "contact_phone": "17607391278",
+          "email": "bidder8143@example.com"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "17607391278"
+        }
+      },
+      {
+        "name": "Bidder-11287",
+        "uid": 11287,
+        "token": "YOUR_BIDDER_3_TOKEN",
+        "register": {
+          "company_address": "山西省太原市",
+          "contact_phone": "13250700801",
+          "email": "bidder11287@example.com"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "13250700801"
+        }
+      },
+      {
+        "name": "Bidder-8108",
+        "uid": 8108,
+        "token": "YOUR_TOKEN_HERE",
+        "register": {
+          "company_address": "山西省太原市",
+          "contact_phone": "13266312331",
+          "email": "bidder8108@example.com",
+          "company_name": "山西岱安律师事务所"
+        },
+        "submit": {
+          "password": "123456",
+          "password_confirm": "123456",
+          "mobile": "13266312331"
+        }
+      }
+    ],
+    "experts": [
+      {
+        "name": "Expert-11291",
+        "uid": 11291,
+        "expert_id": 31,
+        "token": "YOUR_TOKEN_HERE",
+        "invite": {}
+      },
+      {
+        "name": "Expert-11286",
+        "uid": 11286,
+        "expert_id": 30,
+        "token": "YOUR_TOKEN_HERE",
+        "invite": {}
+      }
+    ]
+  },
+  "token_refresh": {
+    "enabled": true,
+    "pm": {
+      "uid": 7882,
+      "mobile": "18802060705",
+      "token": "YOUR_PM_TOKEN_HERE"
+    },
+    "bidders": [
+      {
+        "uid": 11296,
+        "mobile": "13729483065",
+        "name": "Bidder-11296",
+        "token": "YOUR_BIDDER_1_TOKEN"
+      },
+      {
+        "uid": 8143,
+        "mobile": "17607391278",
+        "name": "Bidder-8143",
+        "token": "YOUR_TOKEN_HERE"
+      },
+      {
+        "uid": 11287,
+        "mobile": "13250700801",
+        "name": "Bidder-11287",
+        "token": "YOUR_BIDDER_3_TOKEN"
+      },
+      {
+        "uid": 8108,
+        "mobile": "13266312331",
+        "name": "Bidder-8108",
+        "token": "YOUR_TOKEN_HERE"
+      }
+    ],
+    "experts": [
+      {
+        "uid": 11291,
+        "mobile": "15800042042",
+        "name": "Expert-11291",
+        "token": "YOUR_TOKEN_HERE"
+      },
+      {
+        "uid": 11286,
+        "mobile": "13824497617",
+        "name": "Expert-11286",
+        "token": "YOUR_TOKEN_HERE"
+      }
+    ]
+  },
+  "publish": {
+    "cate_id": 1,
+    "company_id": 2,
+    "pattern_id": 1,
+    "industry_id": 6,
+    "address": "山西省太原市",
+    "region": "140000,140100",
+    "is_audit": 0,
+    "is_min": 2,
+    "is_bid_section": 0,
+    "open_in_minutes": 3,
+    "wait_open_sec": 240,
+    "poll_sec": 5,
+    "project_no_prefix": "BJZC-ZCHW-I3-AUTO-",
+    "file_price": "500.00",
+    "platform_price": "1.00",
+    "deposit": "0.00",
+    "price": "0.00"
+  },
+  "register": {
+    "company_address": "山西省太原市",
+    "email": "bidder@example.com"
+  },
+  "payment": {
+    "enabled": true,
+    "mode": "admin_mock",
+    "pay_way": "bank",
+    "use_v3": false
+  },
+  "submit": {
+    "amount": "10000.00",
+    "address": "山西省太原市",
+    "deadline": "12个月",
+    "password": "123456",
+    "password_confirm": "123456"
+  },
+  "review": {
+    "enabled": true
+  },
+  "flow": {
+    "expert_agree_invite": true
+  },
+  "experts": {
+    "enabled": true
+  },
+  "expert_invite": {
+    "enabled": true,
+    "province": "440000",
+    "city": "440100",
+    "extract_way": 2,
+    "type": 1,
+    "take_time": 3,
+    "address": "山西省太原市"
+  },
+  "expert_actions": {
+    "audit": true,
+    "confirm": true,
+    "confirm_status": 2,
+    "sign": true,
+    "elect_leader": true,
+    "wait_invite_timeout_sec": 30,
+    "poll_sec": 2
+  },
+  "equity": {
+    "use_associated_bids": false,
+    "attach_analysis_pdfs": false
+  },
+  "admin": {
+    "prefix": "/zjgj230214",
+    "name_env": "ZJGJ_ADMIN_NAME",
+    "password_env": "ZJGJ_ADMIN_PASSWORD"
+  }
+}

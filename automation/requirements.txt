@@ -1,2 +1,9 @@
 requests>=2.31.0
 pypdf>=4.0.0
+pymupdf>=1.24.0
+reportlab>=4.0.0
+# OCR for scanned 投标文件 without a text layer (see OCR_SETUP.md)
+pytesseract>=0.3.10
+Pillow>=9.0.0
+# Optional: admin captcha OCR for ZjgjAdminClient
+# ddddocr>=1.4.0
